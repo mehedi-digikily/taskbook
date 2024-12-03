@@ -1,3 +1,13 @@
+import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+
+import 'dart:typed_data';
+import 'dart:typed_data';
+import 'dart:convert';
+
+
+
+
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -21,6 +31,16 @@ const colorDarkBlue = Color.fromRGBO(44, 62, 80, 1.0);
 const colorLightGray = Color.fromRGBO(135, 142, 150, 1.0);
 
 const colorLight = Color.fromRGBO(211, 211, 211, 1.0);
+
+SizedBox ItemSizeBox(child) {
+  return SizedBox(
+    width: double.infinity,
+    child: Container(
+      padding: const EdgeInsets.all(10),
+      child: child,
+    ),
+  );
+}
 
 PinTheme App0TPStyle() {
   return PinTheme(
@@ -55,14 +75,20 @@ TextStyle Head6Text(textColor) {
       fontWeight: FontWeight.w400);
 }
 
-
 TextStyle Head7Text(textColor) {
   return TextStyle(
       color: textColor,
       fontSize: 13,
       fontFamily: 'poppins',
-      fontWeight: FontWeight.w400
-  );
+      fontWeight: FontWeight.w400);
+}
+
+TextStyle Head9Text(textColor) {
+  return TextStyle(
+      color: textColor,
+      fontSize: 9,
+      fontFamily: 'poppins',
+      fontWeight: FontWeight.w300);
 }
 
 InputDecoration AppInputDecoration(label) {
@@ -162,4 +188,24 @@ void ErrorToast(msg) {
     textColor: colorWhite,
     fontSize: 16.0,
   );
+}
+
+Uint8List? ShowBase64Image(String Base64String) {
+  try {
+
+    UriData? data = Uri.parse(Base64String).data;
+
+
+    if (data == null) {
+      print("Invalid Base64 or URI format.");
+      return null;
+    }
+
+    Uint8List MyImage = data.contentAsBytes();
+
+    return MyImage;
+  } catch (e) {
+    print("Error parsing Base64 string: $e");
+    return null;
+  }
 }

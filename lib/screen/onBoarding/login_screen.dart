@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/newTask',
-              (route) => false,
+              (route) => true,
         );
 
         setState(() {

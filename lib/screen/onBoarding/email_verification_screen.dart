@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:note/screen/onBoarding/pin_verification_screen.dart';
 
+import '../../api/apiClient.dart';
 import '../../styel/style.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
@@ -12,6 +12,47 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+
+  Map<String, String> FormValues = {
+    "email":"",
+  };
+  bool Loading = false;
+
+  InputOnChange(MapKey, Textvalue) {
+    setState(() {
+      FormValues.update(MapKey, (value) => Textvalue);
+    });
+  }
+
+  FormOnSubmit() async {
+    if (FormValues['email']!.length == 0) {
+      ErrorToast('Email Required!');
+    } else {
+      setState(() {
+        Loading = true;
+      });
+
+      bool res = await VerifyEmailRequest(FormValues['email']);
+
+      if (res == true) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/pin',
+              (route) => true,
+        );
+
+        setState(() {
+          Loading = false;
+        });
+      } else {
+        setState(() {
+          Loading = false;
+        });
+      }
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +61,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             ScreenBackground(context),
             Container(
               padding: const EdgeInsets.all(30),
-              child: Column(
+              child: Loading? const Center(child: CircularProgressIndicator(),) : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -33,14 +74,17 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       style: Head6Text(colorLightGray),
                     ),
                     const SizedBox(height: 20),
-                    TextFormField(decoration: AppInputDecoration("Email Address")),
+                    TextFormField(
+                      onChanged: (Textvalue){
+                        InputOnChange('email', Textvalue);
+                      },
+                        decoration: AppInputDecoration("Email Address"),),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       style: AppButtonStyle(),
                       child: SuccessButtonChild('Next'),
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const PinVerificationScreen(),));
-
+                        FormOnSubmit();
                       },
                     ),
                   ]

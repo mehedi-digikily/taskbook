@@ -1,7 +1,6 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future <void> WriteUserData (UserData) async {
+Future <void> WriteUserData(UserData) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('token', UserData['token']);
   await prefs.setString('email', UserData['data']['email']);
@@ -10,8 +9,19 @@ Future <void> WriteUserData (UserData) async {
   await prefs.setString('mobile', UserData['data']['mobile']);
   await prefs.setString('photo', UserData['data']['photo']);
 }
-Future<String?> ReadUserData (key)async {
+
+Future<void> WriteEmailVerification(Email) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final String? action = prefs.getString(key);
-  return action;
+  await prefs.setString('EmailVerification', Email);
+}
+
+Future<void> WriteOTPVerification(OTP) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('OTPVerification', OTP);
+}
+
+Future<String?> ReadUserData(Key) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? myData = prefs.getString(Key);
+  return myData;
 }

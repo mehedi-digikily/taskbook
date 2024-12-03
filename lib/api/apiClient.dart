@@ -53,6 +53,7 @@ Future<bool> RegestationRequest(FormValues) async {
 }
 
 Future<bool> VerifyEmailRequest(Email) async {
+
   var URL = Uri.parse("${BaseURL}/RecoverVerifyEmail/${Email}");
 
   var response = await http.get(URL, headers: RequestHeader);
@@ -62,6 +63,7 @@ Future<bool> VerifyEmailRequest(Email) async {
   var ResultBody = json.decode(response.body);
 
   if (ResultCode == 200 && ResultBody['status'] == "success") {
+    await WriteEmailVerification(Email);
     SuccessToast("Request Success");
     return true;
   } else {
@@ -70,13 +72,12 @@ Future<bool> VerifyEmailRequest(Email) async {
   }
 }
 Future <bool> VerifiOTPRequest (Email,OTP)async{
-  var URL = Uri.parse('RecoverVerifyEmail${Email}//${OTP}');
-  var response = await http.get( URL, headers: RequestHeader);
+  var URL = Uri.parse('${BaseURL}/RecoverVerifyOTP/${Email}/${OTP}');
+  var response = await http.get(URL,headers: RequestHeader);
   var ResultCode = response.statusCode;
-  var ResultBody = jsonDecode(response.body);
-
-
+  var ResultBody = json.decode(response.body);
   if(ResultCode == 200 && ResultBody['status'] == 'success'){
+    await WriteOTPVerification(OTP);
     SuccessToast('Request Success');
     return true;
   } else{
@@ -86,14 +87,32 @@ Future <bool> VerifiOTPRequest (Email,OTP)async{
 }
 Future<bool> SetPasswordRequest(FormValues)async{
   var URL = Uri.parse('${BaseURL}/RecoverResetPass',);
-  var response = await http.get(URL, headers: RequestHeader);
+  var PostBody = json.encode(FormValues);
+  var response = await http.post(URL, headers: RequestHeader, body: PostBody);
   var ResultCode = response.statusCode;
-  var ResultBody = jsonDecode(response.body);
+  var ResultBody = json.decode(response.body);
   if(ResultCode == 200 && ResultBody ['status'] == 'success'){
     SuccessToast('Request Success');
     return true;
   }else{
     ErrorToast('Request Fail! try again');
     return false;
+  }
+}
+Future<List> TaskListRequest (Status) async {
+  var URL = Uri.parse('${BaseURL}/listTaskByStatus/${Status}');
+
+  String? token = await ReadUserData('token');
+  var RequestHeaderWriteToken = {"Content-Type": "application/json", 'token' : '$token'};
+
+  var response = await http.get(URL,headers: RequestHeaderWriteToken);
+  var ResultCode = response.statusCode;
+  var ResultBody = json.decode(response.body);
+  if(ResultCode == 200 && ResultBody['status'] == 'success'){
+    SuccessToast('Request Success');
+    return ResultBody['data'];
+  } else{
+    ErrorToast('Request fail! try again');
+    return [];
   }
 }

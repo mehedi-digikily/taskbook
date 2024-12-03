@@ -5,17 +5,18 @@ import 'package:note/screen/onBoarding/pin_verification_screen.dart';
 import 'package:note/screen/onBoarding/reg_screen.dart';
 import 'package:note/screen/onBoarding/set_password_screen.dart';
 import 'package:note/screen/onBoarding/splash_screen.dart';
-import 'package:note/screen/task/new_task_list_screen.dart';
+import 'package:note/component/new_task_.dart';
+import 'package:note/screen/task/home_task_sreen.dart';
 import 'package:note/utiliti/utility.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   String? token = await ReadUserData('token');
   if(token == null){
-    runApp( Myapp('/login'));
+    runApp( const Myapp('/login'));
   }
   else{
-    runApp( Myapp('/newTask'));
+    runApp( const Myapp('/'));
   }
 }
 
@@ -31,13 +32,12 @@ class Myapp extends StatelessWidget {
       title: 'Task Manager',
       initialRoute: firstRoute,
       routes: {
-        '/splash' : (context) => const SplashScreen(),
+        '/' : (context) => const HomeTaskScreen(),
         '/login' : (context) => const LoginScreen(),
         '/registration' : (context) => const RegistrationScreen(),
         '/emailVerification' : (context) => const EmailVerificationScreen(),
         '/pin' : (context) => const PinVerificationScreen(),
-        '/password' : (context) => const SetPasswordScreen(),
-        '/newTask' : (context) => const NewTaskListScreen(),
+        '/setPassword' : (context) => const SetPasswordScreen(),
       },
     );
   }
